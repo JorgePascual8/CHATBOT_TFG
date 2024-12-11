@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="{{ idioma }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if idioma == 'es' %}Tutor Virtual - UC3M{% else %}Virtual Tutor - UC3M{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Cabecera fija -->
+    <header>
+        <img src="{{ url_for('static', filename='uc3m_logo.png') }}" alt="UC3M Logo" class="logo">
+        <h1>{% if idioma == 'es' %}Tutor Virtual - UC3M{% else %}Virtual Tutor - UC3M{% endif %}</h1>
+        <div class="language-buttons">
+            <a href="{{ url_for('set_language', language='es') }}" role="button" tabindex="0">
+                <img src="{{ url_for('static', filename='imagen_español_boton.png') }}" alt="Cambiar idioma a Español" class="language-icon" {% if idioma == 'es' %}style="opacity: 0.5;" aria-disabled="true"{% endif %}>
+            </a>
+            <a href="{{ url_for('set_language', language='en') }}" role="button" tabindex="0">
+                <img src="{{ url_for('static', filename='imagen_ingles_boton.png') }}" alt="Switch language to English" class="language-icon" {% if idioma == 'en' %}style="opacity: 0.5;" aria-disabled="true"{% endif %}>
+            </a>
+        </div>
+    </header>
+
+    <!-- Contenedor principal con diseño de dos columnas -->
+    <div class="main-container">
+        <!-- Columna izquierda: Formulario -->
+        <div class="left-column">
+            <form method="post" id="chat-form">
+                <h2>{% if idioma == 'es' %}Selecciona el Rol y Haz tu Pregunta{% else %}Select Role and Ask Your Question{% endif %}</h2>
+                <label for="rol">{% if idioma == 'es' %}Rol:{% else %}Role:{% endif %}</label>
+                <select id="rol" name="rol" required>
+                    <option value="mentor" {% if rol == 'mentor' %}selected{% endif %}>{% if idioma == 'es' %}Mentor{% else %}Mentor{% endif %}</option>
+                    <option value="tutor" {% if rol == 'tutor' %}selected{% endif %}>{% if idioma == 'es' %}Tutor{% else %}Tutor{% endif %}</option>
+                    <option value="entrenador" {% if rol == 'entrenador' %}selected{% endif %}>{% if idioma == 'es' %}Entrenador{% else %}Coach{% endif %}</option>
+                    <option value="companero" {% if rol == 'companero' %}selected{% endif %}>{% if idioma == 'es' %}Compañero{% else %}Peer{% endif %}</option>
+                    <option value="estudiante" {% if rol == 'estudiante' %}selected{% endif %}>{% if idioma == 'es' %}Estudiante{% else %}Student{% endif %}</option>
+                    <option value="simulador" {% if rol == 'simulador' %}selected{% endif %}>{% if idioma == 'es' %}Simulador{% else %}Simulator{% endif %}</option>
+                    <option value="herramienta" {% if rol == 'herramienta' %}selected{% endif %}>{% if idioma == 'es' %}Herramienta{% else %}Tool{% endif %}</option>
+                </select>
+
+                <label for="pregunta">{% if idioma == 'es' %}Pregunta:{% else %}Question:{% endif %}</label>
+                <textarea id="pregunta" name="pregunta" required>{{ pregunta or '' }}</textarea>
+                <button type="submit">{% if idioma == 'es' %}Enviar{% else %}Submit{% endif %}</button>
+            </form>
+        </div>
+
+        <!-- Columna derecha: Chat -->
+        <div class="right-column">
+            <!-- Área de chat -->
+            <div class="chat-container">
+                {% if historial %}
+                <div class="chat" id="chat-container">
+                    {% for mensaje in historial %}
+                        <div class="message-container">
+                            <div class="user-message">
+                                <p><strong>{% if idioma == 'es' %}Tú:{% else %}You:{% endif %}</strong> {{ mensaje.pregunta }}</p>
+                            </div>
+                            <div class="bot-response">
+                                <p><strong>{{ mensaje.rol }}:</strong> {{ mensaje.respuesta }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <!-- Mensaje inicial si no hay historial -->
+                <p>{% if idioma == 'es' %}Bienvenido al Tutor Virtual. Haz una pregunta para comenzar.{% else %}Welcome to the Virtual Tutor. Ask a question to start.{% endif %}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie de página fijo -->
+    <footer>
+        <p>&copy; {{ current_year }} {% if idioma == 'es' %}Universidad Carlos III de Madrid{% else %}Carlos III University of Madrid{% endif %}</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Función para hacer scroll al final del chat
+        function scrollToBottom() {
+            var chatContainer = document.getElementById('chat-container');
+            if (chatContainer) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+        // Llamar a scrollToBottom cuando el contenido esté cargado
+        window.onload = function() {
+            scrollToBottom();
+        };
+    </script>
+</body>
+</html>

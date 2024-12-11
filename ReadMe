@@ -1,0 +1,21 @@
+Para poder correr bien el código hay primero que crear un entorno venv:
+.\venv\Scripts\Activate.ps1
+Y se te tiene que poner asi: (venv) PS C:\Users\jorge\OneDrive\Escritorio\TFG>        
+
+Luego poner los requisitos: 
+pip install -r requisitos.txt      
+
+Para poder ver que este todo bien descargado, mirar que openai sea 0.27.0 o 0.27.8 (la segunda puede que no vaya) y que flask este descargado:  
+pip list 
+
+pip show openai
+
+Establecer la API key: 
+$Env:OPENAI_API_KEY = 'sk-ovLxp2t6BULyD7n4bH1jK6xo9Uz3P5w5KUNL-o-UEYT3BlbkFJnFct_KfspkcXQfwZVPqIBTFEjAbWy0zs-ojRr7S4MA'
+
+Comprobar que está bien: 
+echo $Env:OPENAI_API_KEY
+
+Correr: 
+    - python main.py (para la terminal)
+    - python app.py (para la página web, para poder acceder a la web hay que copiar de la terminal dónde pone "Running on http://..." copiar el enlace y ponerlo en algun buscador (google)

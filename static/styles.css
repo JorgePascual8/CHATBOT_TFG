@@ -1,0 +1,202 @@
+/* styles.css */
+
+/* Estilos globales */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    background-color: #f5f5f5;
+}
+
+/* Encabezado fijo */
+header {
+    background-color: #003399; /* Azul UC3M */
+    color: white;
+    text-align: center;
+    padding: 5px; /* Reducir el padding para hacerlo más compacto */
+    position: fixed; /* Fijar el encabezado */
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+header .logo {
+    max-width: 120px; /* Reducir el tamaño del logo */
+    margin-bottom: 3px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 20px; /* Reducir el tamaño de la fuente en el header */
+}
+
+/* Botones de idioma */
+.language-buttons {
+    margin-top: 3px;
+}
+
+.language-buttons a {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.language-buttons img.language-icon {
+    width: 20px; /* Reducir tamaño de los iconos de idioma */
+    height: 20px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.language-buttons img.language-icon:hover {
+    opacity: 0.7;
+}
+
+.language-buttons img.language-icon[style*="opacity: 0.5;"] {
+    cursor: default;
+}
+
+/* Contenedor principal */
+.main-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 170px; /* Aumentar el espacio debajo del header */
+    padding-bottom: 120px; /* Aumentar el espacio por encima del footer */
+    box-sizing: border-box;
+    min-height: calc(100vh - 290px); /* Altura total menos header y footer */
+}
+
+/* Columna izquierda: Formulario */
+.left-column {
+    width: 25%;
+    background-color: #ffffff;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.left-column form {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.left-column h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.left-column label {
+    font-size: 14px;
+    display: block;
+    margin-top: 10px;
+}
+
+.left-column select,
+.left-column textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.left-column textarea {
+    resize: none;
+    height: 100px;
+}
+
+.left-column button {
+    margin-top: 10px;
+    width: 100%;
+    background-color: #003399;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.left-column button:hover {
+    background-color: #002d80;
+}
+
+/* Columna derecha: Chat */
+.right-column {
+    width: 75%;
+    background-color: #ffffff;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    max-height: calc(100vh - 290px); /* Altura total menos header y footer */
+}
+
+/* Área de chat */
+.chat-container {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.chat {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilos para los mensajes */
+.message-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.user-message {
+    background-color: #DCF8C6;
+    border-radius: 15px;
+    padding: 10px;
+    align-self: flex-end;
+    word-wrap: break-word;
+    max-width: 80%;
+}
+
+.bot-response {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    padding: 10px;
+    align-self: flex-start;
+    word-wrap: break-word;
+    max-width: 80%;
+}
+
+.user-message p, .bot-response p {
+    margin: 0;
+}
+
+/* Pie de página fijo */
+footer {
+    background-color: #003399;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed; /* Fijar el pie de página */
+    width: 100%;
+    bottom: 0;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* Ajuste para evitar scroll horizontal en pantallas pequeñas */
+@media (max-width: 1200px) {
+    .main-container {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .left-column, .right-column {
+        width: 100%;
+    }
+}
