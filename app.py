@@ -9,7 +9,6 @@ import numpy as np
 import os
 
 app = Flask(__name__)
-app.secret_key = 'tu_clave_secreta'  # Cambia esto por una clave segura
 
 # Configurar la API de OpenAI
 configurar_openai()
