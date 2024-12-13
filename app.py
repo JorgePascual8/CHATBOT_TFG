@@ -9,6 +9,7 @@ import numpy as np
 import os
 
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY", "una_clave_por_defecto_insegura")
 
 # Configurar la API de OpenAI
 configurar_openai()
