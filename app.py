@@ -1,5 +1,6 @@
 import os
 import time
+import json
 from datetime import datetime
 from flask import Flask, render_template, request, session, redirect, url_for
 from extraer_texto import extraer_texto_pdf
@@ -20,6 +21,23 @@ COSTO_POR_1K_TOKENS = 0.002  # Coste estimado en USD para GPT-3.5-turbo
 # Configurar la API de OpenAI
 configurar_openai()
 
+# Configuración de Google Sheets usando la variable de entorno
+credentials_json = os.getenv("GOOGLE_CREDENTIALS")
+if not credentials_json:
+    raise ValueError("Las credenciales de Google no están configuradas correctamente.")
+
+# Configuración de las credenciales de Google Sheets
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+    json.loads(credentials_json),
+    scopes=["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+)
+gc = gspread.authorize(credentials)
+
+# Abre la hoja de Google Sheets
+SHEET_NAME = "chatbot_metrics"  # Nombre de tu hoja en Google Sheets
+spreadsheet = gc.open(SHEET_NAME)
+sheet = spreadsheet.sheet1  # Primera hoja de tu documento
+
 # Cargar modelo y embeddings al iniciar el servidor
 modelo = cargar_modelo_embeddings()
 if os.path.exists('embeddings.npy') and os.path.exists('oraciones.npy'):
@@ -32,27 +50,6 @@ else:
     embeddings_oraciones = generar_embeddings(oraciones, modelo)
     np.save('embeddings.npy', embeddings_oraciones)
     np.save('oraciones.npy', oraciones)
-
-# Configurar Google Sheets
-GOOGLE_SHEET_NAME = "chatbot_metrics"  # Nombre del documento de Google Sheets
-CREDENTIALS_FILE = "credentials.json"  # Archivo de credenciales JSON
-
-# Autenticación con Google Sheets
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
-client = gspread.authorize(creds)
-
-# Acceder a la hoja de métricas
-try:
-    sheet = client.open(GOOGLE_SHEET_NAME).sheet1
-except gspread.SpreadsheetNotFound:
-    # Crear la hoja si no existe
-    sheet = client.create(GOOGLE_SHEET_NAME).sheet1
-    sheet.append_row([
-        "Timestamp", "Pregunta", "Respuesta", "Rol", "Idioma", "Tiempo de Respuesta (s)",
-        "Longitud Pregunta", "Longitud Respuesta", "Tokens Prompt", 
-        "Tokens Completion", "Tokens Total", "Coste (USD)", "Error"
-    ])
 
 @app.route('/set_language/<language>')
 def set_language(language):
@@ -69,7 +66,7 @@ def index():
     if request.method == 'POST':
         pregunta = request.form['pregunta']
         rol = request.form['rol']
-        inicio_procesamiento = time.time()
+        inicio_procesamiento = time.time()  # Inicio del cálculo de tiempo
         respuesta = ""
         error = None
         tokens_prompt = 0
@@ -78,7 +75,7 @@ def index():
         coste = 0.0
 
         try:
-            # Generar contexto y respuesta
+            # Buscar contexto y generar respuesta
             contexto = buscar_oraciones_similares(pregunta, embeddings_oraciones, oraciones, modelo)
             respuesta_objeto = generar_respuesta(contexto, pregunta, rol, idioma)
             respuesta = respuesta_objeto["respuesta"]
@@ -109,7 +106,7 @@ def index():
             tokens_completion,
             tokens_total,
             round(coste, 4),
-            error
+            error or "N/A"
         ])
 
         # Agregar al historial
@@ -126,4 +123,3 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
