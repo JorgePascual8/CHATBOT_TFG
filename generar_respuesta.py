@@ -121,3 +121,51 @@ def generar_respuesta(contexto, pregunta, rol, idioma='es'):
         print(f"Ocurrió un error con la API de OpenAI: {e}")
         return "Lo siento, ocurrió un error al procesar tu solicitud."
 
+
+def generar_respuesta(contexto, pregunta, rol, idioma='es'):
+    # Mensaje de sistema y usuario
+    mensaje_sistema = {
+        "role": "system",
+        "content": f"Eres un {rol} experto. Responde en el idioma '{idioma}'."
+    }
+    mensaje_usuario = {
+        "role": "user",
+        "content": f"Contexto: {contexto}\n\nPregunta: {pregunta}"
+    }
+
+    try:
+        # Llamada a la API de OpenAI
+        respuesta = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[mensaje_sistema, mensaje_usuario]
+        )
+        
+        # Obtener la respuesta generada por el modelo
+        respuesta_texto = respuesta['choices'][0]['message']['content']
+        
+        # Extraer información de los tokens
+        tokens_prompt = respuesta['usage']['prompt_tokens']
+        tokens_completion = respuesta['usage']['completion_tokens']
+        tokens_total = respuesta['usage']['total_tokens']
+        
+        # Calcular el coste basado en el precio por 1,000 tokens
+        coste = (tokens_total / 1000) * 0.002  # Precio para GPT-3.5-turbo
+        
+        return {
+            "respuesta": respuesta_texto,
+            "tokens_prompt": tokens_prompt,
+            "tokens_completion": tokens_completion,
+            "tokens_total": tokens_total,
+            "coste": coste
+        }
+    except openai.error.OpenAIError as e:
+        print(f"Error al procesar la solicitud: {e}")
+        return {
+            "respuesta": "Error al generar respuesta.",
+            "tokens_prompt": 0,
+            "tokens_completion": 0,
+            "tokens_total": 0,
+            "coste": 0.0
+        }
+
+
