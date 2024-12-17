@@ -2,13 +2,14 @@ import os
 import time
 from datetime import datetime
 from flask import Flask, render_template, request, session, redirect, url_for
-from openpyxl import Workbook, load_workbook
 from extraer_texto import extraer_texto_pdf
 from procesar_texto import procesar_texto
 from generar_embeddings import cargar_modelo_embeddings, generar_embeddings
 from buscar_contexto import buscar_oraciones_similares
 from generar_respuesta import configurar_openai, generar_respuesta
 import numpy as np
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "clave_por_defecto")
@@ -32,20 +33,26 @@ else:
     np.save('embeddings.npy', embeddings_oraciones)
     np.save('oraciones.npy', oraciones)
 
-# Archivo para almacenar métricas
-METRICS_FILE = "chatbot_metrics.xlsx"
+# Configurar Google Sheets
+GOOGLE_SHEET_NAME = "chatbot_metrics"  # Nombre del documento de Google Sheets
+CREDENTIALS_FILE = "credentials.json"  # Archivo de credenciales JSON
 
-# Inicializar el archivo de métricas con encabezados si no existe
-if not os.path.exists(METRICS_FILE):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Métricas"
-    ws.append([
+# Autenticación con Google Sheets
+scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
+client = gspread.authorize(creds)
+
+# Acceder a la hoja de métricas
+try:
+    sheet = client.open(GOOGLE_SHEET_NAME).sheet1
+except gspread.SpreadsheetNotFound:
+    # Crear la hoja si no existe
+    sheet = client.create(GOOGLE_SHEET_NAME).sheet1
+    sheet.append_row([
         "Timestamp", "Pregunta", "Respuesta", "Rol", "Idioma", "Tiempo de Respuesta (s)",
         "Longitud Pregunta", "Longitud Respuesta", "Tokens Prompt", 
         "Tokens Completion", "Tokens Total", "Coste (USD)", "Error"
     ])
-    wb.save(METRICS_FILE)
 
 @app.route('/set_language/<language>')
 def set_language(language):
@@ -62,7 +69,7 @@ def index():
     if request.method == 'POST':
         pregunta = request.form['pregunta']
         rol = request.form['rol']
-        inicio_procesamiento = time.time()  # Inicio del cálculo de tiempo
+        inicio_procesamiento = time.time()
         respuesta = ""
         error = None
         tokens_prompt = 0
@@ -71,7 +78,7 @@ def index():
         coste = 0.0
 
         try:
-            # Buscar contexto y generar respuesta
+            # Generar contexto y respuesta
             contexto = buscar_oraciones_similares(pregunta, embeddings_oraciones, oraciones, modelo)
             respuesta_objeto = generar_respuesta(contexto, pregunta, rol, idioma)
             respuesta = respuesta_objeto["respuesta"]
@@ -88,26 +95,22 @@ def index():
         longitud_pregunta = len(pregunta)
         longitud_respuesta = len(respuesta)
 
-        # Guardar métricas en Excel
-        if os.path.exists(METRICS_FILE):
-            wb = load_workbook(METRICS_FILE)
-            ws = wb["Métricas"]
-            ws.append([
-                datetime.now().isoformat(),
-                pregunta,
-                respuesta,
-                rol,
-                idioma,
-                round(tiempo_respuesta, 2),
-                longitud_pregunta,
-                longitud_respuesta,
-                tokens_prompt,
-                tokens_completion,
-                tokens_total,
-                round(coste, 4),
-                error
-            ])
-            wb.save(METRICS_FILE)
+        # Guardar métricas en Google Sheets
+        sheet.append_row([
+            datetime.now().isoformat(),
+            pregunta,
+            respuesta,
+            rol,
+            idioma,
+            round(tiempo_respuesta, 2),
+            longitud_pregunta,
+            longitud_respuesta,
+            tokens_prompt,
+            tokens_completion,
+            tokens_total,
+            round(coste, 4),
+            error
+        ])
 
         # Agregar al historial
         session['historial'].append({
@@ -123,3 +126,4 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
