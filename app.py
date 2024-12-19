@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "clave_por_defecto")
 
 # Configuración de costes por token de OpenAI
-COSTO_POR_1K_TOKENS = 0.002
+COSTO_POR_1K_TOKENS = 0.002  # Coste estimado en USD para GPT-3.5-turbo
 
 # Configurar la API de OpenAI
 configurar_openai()
@@ -34,7 +34,7 @@ credentials = ServiceAccountCredentials.from_json_keyfile_dict(
 gc = gspread.authorize(credentials)
 
 # Abre la hoja de Google Sheets
-SHEET_NAME = "chatbot_metrics"
+SHEET_NAME = "chatbot_metrics"  # Nombre de tu hoja en Google Sheets
 spreadsheet = gc.open(SHEET_NAME)
 sheet = spreadsheet.sheet1  # Primera hoja de tu documento
 
@@ -53,11 +53,8 @@ else:
 
 @app.route('/set_language/<language>')
 def set_language(language):
-    if language in ['es', 'en']:
-        session['idioma'] = language
-    else:
-        session['idioma'] = 'es'
-    return redirect(url_for('index'))  # Redirige a la página principal
+    session['idioma'] = language
+    return redirect(url_for('index'))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -67,8 +64,8 @@ def index():
         session['historial'] = []
 
     if request.method == 'POST':
-        pregunta = request.json.get('pregunta')
-        rol = request.json.get('rol')
+        pregunta = request.form['pregunta']
+        rol = request.form['rol']
         inicio_procesamiento = time.time()  # Inicio del cálculo de tiempo
         respuesta = ""
         error = None
@@ -96,24 +93,21 @@ def index():
         longitud_respuesta = len(respuesta)
 
         # Guardar métricas en Google Sheets
-        try:
-            sheet.append_row([
-                datetime.now().isoformat(),
-                pregunta,
-                respuesta,
-                rol,
-                idioma,
-                round(tiempo_respuesta, 2),
-                longitud_pregunta,
-                longitud_respuesta,
-                tokens_prompt,
-                tokens_completion,
-                tokens_total,
-                round(coste, 4),
-                error or "N/A"
-            ])
-        except Exception as e:
-            print(f"[Error al guardar en Google Sheets]: {e}")
+        sheet.append_row([
+            datetime.now().isoformat(),
+            pregunta,
+            respuesta,
+            rol,
+            idioma,
+            round(tiempo_respuesta, 2),
+            longitud_pregunta,
+            longitud_respuesta,
+            tokens_prompt,
+            tokens_completion,
+            tokens_total,
+            round(coste, 4),
+            error or "N/A"
+        ])
 
         # Agregar al historial
         session['historial'].append({
