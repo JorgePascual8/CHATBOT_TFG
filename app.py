@@ -57,7 +57,7 @@ def set_language(language):
         session['idioma'] = language
     else:
         session['idioma'] = 'es'
-    return {"mensaje": f"Idioma cambiado a {session['idioma']}"}, 200
+    return redirect(url_for('index'))  # Redirige a la página principal
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
