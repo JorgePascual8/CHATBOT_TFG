@@ -34,9 +34,9 @@ credentials = ServiceAccountCredentials.from_json_keyfile_dict(
 gc = gspread.authorize(credentials)
 
 # Abre la hoja de Google Sheets
-SHEET_NAME = "chatbot_metrics"  # Nombre de tu hoja en Google Sheets
+SHEET_NAME = "chatbot_metrics"  # Nombre de la hoja en Google Sheets
 spreadsheet = gc.open(SHEET_NAME)
-sheet = spreadsheet.sheet1  # Primera hoja de tu documento
+sheet = spreadsheet.sheet1  
 
 # Cargar modelo y embeddings al iniciar el servidor
 modelo = cargar_modelo_embeddings()
@@ -66,7 +66,7 @@ def index():
     if request.method == 'POST':
         pregunta = request.form['pregunta']
         rol = request.form['rol']
-        inicio_procesamiento = time.time()  # Inicio del cálculo de tiempo
+        inicio_procesamiento = time.time()  
         respuesta = ""
         error = None
         tokens_prompt = 0
