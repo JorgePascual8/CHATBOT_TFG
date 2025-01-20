@@ -8,7 +8,6 @@ def configurar_openai():
         raise ValueError("La clave de API de OpenAI no está configurada. Establece la variable de entorno 'OPENAI_API_KEY'.")
 
 def generar_respuesta(contexto, pregunta, rol, idioma='es'):
-    # Definir los roles en español e inglés
     roles_dict_es = {
         'mentor': (
             "Eres un mentor experimentado en este campo de estudio. Tu objetivo es proporcionar retroalimentación constructiva "
