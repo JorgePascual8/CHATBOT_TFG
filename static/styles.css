@@ -9,11 +9,11 @@ body {
 
 /* Encabezado fijo */
 header {
-    background-color: #003399; /* Azul UC3M */
+    background-color: #003399; /* Color Azul UC3M */
     color: white;
     text-align: center;
-    padding: 5px; /* Reducir el padding para hacerlo más compacto */
-    position: fixed; /* Fijar el encabezado */
+    padding: 5px; 
+    position: fixed; 
     top: 0;
     width: 100%;
     z-index: 1000;
@@ -21,13 +21,13 @@ header {
 }
 
 header .logo {
-    max-width: 120px; /* Reducir el tamaño del logo */
+    max-width: 120px; 
     margin-bottom: 3px;
 }
 
 h1 {
     margin: 0;
-    font-size: 20px; /* Reducir el tamaño de la fuente en el header */
+    font-size: 20px; 
 }
 
 /* Botones de idioma */
@@ -41,7 +41,7 @@ h1 {
 }
 
 .language-buttons img.language-icon {
-    width: 20px; /* Reducir tamaño de los iconos de idioma */
+    width: 20px; 
     height: 20px;
     cursor: pointer;
     transition: opacity 0.3s;
@@ -61,10 +61,10 @@ h1 {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    padding-top: 170px; /* Aumentar el espacio debajo del header */
-    padding-bottom: 120px; /* Aumentar el espacio por encima del footer */
+    padding-top: 170px; 
+    padding-bottom: 120px; 
     box-sizing: border-box;
-    min-height: calc(100vh - 290px); /* Altura total menos header y footer */
+    min-height: calc(100vh - 290px); 
 }
 
 /* Columna izquierda: Formulario */
@@ -130,7 +130,7 @@ h1 {
     padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
-    max-height: calc(100vh - 290px); /* Altura total menos header y footer */
+    max-height: calc(100vh - 290px); 
 }
 
 /* Área de chat */
@@ -181,7 +181,7 @@ footer {
     color: white;
     text-align: center;
     padding: 10px;
-    position: fixed; /* Fijar el pie de página */
+    position: fixed; 
     width: 100%;
     bottom: 0;
     font-size: 14px;
