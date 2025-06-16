@@ -1,21 +1,7 @@
-Para poder correr bien el código hay primero que crear un entorno venv:
-.\venv\Scripts\Activate.ps1
-Y se te tiene que poner asi: (venv) PS C:\Users\jorge\OneDrive\Escritorio\TFG>        
+Este repositorio contiene el código y la documentación desarrollados como parte del Trabajo de Fin de Grado (TFG) titulado "Desarrollo e Implementación de un Chatbot Educativo Basado en Modelos de Lenguaje de Gran Tamaño para la Asignatura de Teoría de Redes" en la Universidad Carlos III de Madrid (UC3M), realizado por Jorge Pascual Domingo bajo la dirección del profesor Marco Gramaglia.
 
-Luego poner los requisitos: 
-pip install -r requisitos.txt      
+El objetivo del proyecto es implementar un chatbot capaz de proporcionar respuestas personalizadas y adaptativas a las preguntas de los estudiantes de la asignatura de Teoría de Redes. Este chatbot utiliza el modelo GPT-3.5 de OpenAI y cuenta con diferentes roles (mentor, tutor, entrenador, compañero, etc.) que permiten personalizar la experiencia educativa.
 
-Para poder ver que este todo bien descargado, mirar que openai sea 0.27.0 o 0.27.8 (la segunda puede que no vaya) y que flask este descargado:  
-pip list 
+Este proyecto es una iniciativa académica y está sujeto a la licencia Creative Commons Reconocimiento – No Comercial – Sin Obra Derivada. Se permite el uso educativo y no comercial del contenido aquí expuesto, siempre que se reconozca debidamente al autor original.
 
-pip show openai
-
-Establecer la API key: 
-$Env:OPENAI_API_KEY = 'sk-ovLxp2t6BULyD7n4bH1jK6xo9Uz3P5w5KUNL-o-UEYT3BlbkFJnFct_KfspkcXQfwZVPqIBTFEjAbWy0zs-ojRr7S4MA'
-
-Comprobar que está bien: 
-echo $Env:OPENAI_API_KEY
-
-Correr: 
-    - python main.py (para la terminal)
-    - python app.py (para la página web, para poder acceder a la web hay que copiar de la terminal dónde pone "Running on http://..." copiar el enlace y ponerlo en algun buscador (google)
+Para más información sobre los detalles técnicos, metodología, evaluación y resultados del proyecto, consulta la documentación completa incluida en este repositorio.
